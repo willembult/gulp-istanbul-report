@@ -5,6 +5,8 @@ var istanbulReport = require('../');
 var gulp = require('gulp');
 var expect = require('chai').expect;
 var del = require('del');
+var gutil = require('gulp-util');
+var PluginError = gutil.PluginError;
 
 describe('gulp-istanbul-report', function() {
 
@@ -44,7 +46,19 @@ describe('gulp-istanbul-report', function() {
 
         done();
       }));
-  }); 
+  });
+
+  it('should handle error from reporter gracefully', function(done) {
+    gulp.src('./test/coverage.json')
+      .pipe(istanbulReport({
+        print: '',
+        dir: './test/output',
+        reporters: [
+          'html'
+        ]
+      }).on('error', function(err) {
+        expect(err).to.be.instanceof(PluginError);
+        done();
+      }));
+  });
 });
-
-

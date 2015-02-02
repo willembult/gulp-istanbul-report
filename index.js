@@ -51,8 +51,13 @@ module.exports = function(opts) {
     
     // write reports
     reporters.forEach(function (report) {
-      report.writeReport(collector, true);
-    });
+      try {
+        report.writeReport(collector, true);
+      }
+      catch (Exception) {
+        return this.emit('error', new PluginError('gulp-istanbul-report', "Couldn't write report file for writer " + report.opts.name));
+      }
+    }.bind(this));
 
     this.emit('end');
   }
